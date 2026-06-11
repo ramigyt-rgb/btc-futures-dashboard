@@ -98,7 +98,7 @@ rr_target = st.sidebar.number_input("Riesgo/Beneficio mínimo", min_value=1.0, v
 
 
 
-exchange = ccxt.oky({
+exchange = ccxt.okx({
 
 
 
