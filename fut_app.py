@@ -66,11 +66,18 @@ SIGNALS_FILE = "signals_log.csv"
 
 
 
+
 if st.button("💾 Guardar señal"):
 
     nueva_senal = pd.DataFrame([{
 
         "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        
+estrategia = st.sidebar.selectbox(
+        "Estrategia",
+        ["Tendencia + Liquidez"],
+        key="estrategia_select"
+)
 
         "estrategia": estrategia,
 
