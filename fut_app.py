@@ -157,7 +157,7 @@ st.sidebar.divider()
 
 
 
-estrategia = st.sidebar.selectbox(
+estrategia2 = st.sidebar.selectbox(
 
     "Estrategia",
 
