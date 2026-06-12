@@ -64,7 +64,16 @@ st.set_page_config(
 
 SIGNALS_FILE = "signals_log.csv"
 
-
+estrategia = st.sidebar.selectbox(
+    "Estrategia",
+    [
+        "Tendencia + Liquidez",
+        "Pullback EMA50",
+        "Sweep de Liquidez",
+        "Ruptura de Estructura",
+        "Reversión Extrema"
+    ]
+)
 
 
 if st.button("💾 Guardar señal"):
