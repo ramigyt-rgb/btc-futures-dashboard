@@ -82,7 +82,7 @@ if st.button("💾 Guardar señal"):
 
         "fecha": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
 
-        "estrategia": estrategia,
+    
 
         "decision": decision,
 
