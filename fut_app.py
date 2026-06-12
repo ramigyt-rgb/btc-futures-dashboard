@@ -157,25 +157,7 @@ st.sidebar.divider()
 
 
 
-estrategia2 = st.sidebar.selectbox(
 
-    "Estrategia",
-
-    [
-
-        "Tendencia + Liquidez",
-
-        "Pullback EMA50",
-
-        "Sweep de Liquidez",
-
-        "Ruptura de Estructura",
-
-        "Reversión Extrema"
-
-    ]
-
-)
 
 
 
