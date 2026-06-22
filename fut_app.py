@@ -545,6 +545,8 @@ def add_indicators(df):
     df["body"] = (df["close"] - df["open"]).abs()
     df["upper_wick"] = df["high"] - df[["open", "close"]].max(axis=1)
     df["lower_wick"] = df[["open", "close"]].min(axis=1) - df["low"]
+    df["vol_ma20"] = df["volume"].rolling(20).mean()
+    df["vol_ratio"] = df["volume"] / df["vol_ma20"]
     return df
 
 
