@@ -974,6 +974,242 @@ def validate_trade(estrategia, direction, long_score, short_score, min_score, ri
     motivos.extend(strategy_filter(estrategia, direction, df_15m, df_5m, levels, structure, market_bias, fvg_df, use_fvg_filter, fvg_max_distance_atr, df_1h))
     return len(motivos) == 0, motivos
 
+def detectar_zonas_daytrade(df_15m, asia_high=None, london_high=None, max_zonas=5):
+
+    """
+
+    Detecta zonas importantes para daytrade BTC:
+
+    - Bearish FVG
+
+    - EMA20 / EMA50
+
+    - Máximo Asia
+
+    - Máximo Londres
+
+    - Liquidez / resistencias recientes
+
+    Devuelve zonas ordenadas por importancia.
+
+    """
+
+    zonas = []
+
+    if df_15m is None or df_15m.empty or len(df_15m) < 60:
+
+        return zonas
+
+    df = df_15m.copy()
+
+    precio = float(df["close"].iloc[-1])
+
+    atr = float(df["atr"].iloc[-1]) if "atr" in df.columns else 0
+
+    if atr <= 0:
+
+        atr = abs(precio * 0.003)
+
+    # ======================
+
+    # 1) EMAS
+
+    # ======================
+
+    for ema_col, nombre, peso in [
+
+        ("ema20", "EMA20", 4),
+
+        ("ema50", "EMA50", 5),
+
+    ]:
+
+        if ema_col in df.columns:
+
+            ema = float(df[ema_col].iloc[-1])
+
+            distancia = abs(precio - ema) / atr
+
+            if distancia <= 1.5:
+
+                zonas.append({
+
+                    "zona": nombre,
+
+                    "desde": ema - atr * 0.15,
+
+                    "hasta": ema + atr * 0.15,
+
+                    "score": peso + max(0, 2 - distancia),
+
+                    "motivo": f"Precio cerca de {nombre}"
+
+                })
+
+    # ======================
+
+    # 2) MÁXIMO ASIA / LONDRES
+
+    # ======================
+
+    niveles_sesion = [
+
+        ("Máximo Asia", asia_high, 5),
+
+        ("Máximo Londres", london_high, 5),
+
+    ]
+
+    for nombre, nivel, peso in niveles_sesion:
+
+        if nivel is not None and not pd.isna(nivel):
+
+            nivel = float(nivel)
+
+            distancia = abs(precio - nivel) / atr
+
+            if distancia <= 3:
+
+                zonas.append({
+
+                    "zona": nombre,
+
+                    "desde": nivel - atr * 0.20,
+
+                    "hasta": nivel + atr * 0.20,
+
+                    "score": peso + max(0, 3 - distancia),
+
+                    "motivo": f"Liquidez cercana en {nombre}"
+
+                })
+
+    # ======================
+
+    # 3) RESISTENCIAS RECIENTES
+
+    # ======================
+
+    ultimas = df.tail(80)
+
+    swing_highs = []
+
+    for i in range(2, len(ultimas) - 2):
+
+        h = ultimas["high"].iloc[i]
+
+        if (
+
+            h > ultimas["high"].iloc[i - 1]
+
+            and h > ultimas["high"].iloc[i - 2]
+
+            and h > ultimas["high"].iloc[i + 1]
+
+            and h > ultimas["high"].iloc[i + 2]
+
+        ):
+
+            swing_highs.append(float(h))
+
+    for h in swing_highs[-10:]:
+
+        distancia = abs(precio - h) / atr
+
+        if distancia <= 3:
+
+            zonas.append({
+
+                "zona": "Resistencia / Liquidez",
+
+                "desde": h - atr * 0.20,
+
+                "hasta": h + atr * 0.20,
+
+                "score": 4 + max(0, 3 - distancia),
+
+                "motivo": "Máximo reciente donde puede haber liquidez"
+
+            })
+
+    # ======================
+
+    # 4) BEARISH FVG
+
+    # ======================
+
+    for i in range(2, len(df)):
+
+        high_1 = df["high"].iloc[i - 2]
+
+        low_3 = df["low"].iloc[i]
+
+        if low_3 > high_1:
+
+            fvg_desde = float(high_1)
+
+            fvg_hasta = float(low_3)
+
+            centro = (fvg_desde + fvg_hasta) / 2
+
+            distancia = abs(precio - centro) / atr
+
+            tamaño = abs(fvg_hasta - fvg_desde) / atr
+
+            if distancia <= 4 and tamaño >= 0.20:
+
+                zonas.append({
+
+                    "zona": "Bearish FVG / Ineficiencia",
+
+                    "desde": fvg_desde,
+
+                    "hasta": fvg_hasta,
+
+                    "score": 6 + max(0, 4 - distancia) + min(tamaño, 2),
+
+                    "motivo": "Zona de ineficiencia cercana"
+
+                })
+
+    # ======================
+
+    # 5) UNIFICAR ZONAS PARECIDAS
+
+    # ======================
+
+    zonas_ordenadas = sorted(zonas, key=lambda x: x["score"], reverse=True)
+
+    zonas_finales = []
+
+    for z in zonas_ordenadas:
+
+        solapada = False
+
+        for existente in zonas_finales:
+
+            if not (z["hasta"] < existente["desde"] or z["desde"] > existente["hasta"]):
+
+                existente["desde"] = min(existente["desde"], z["desde"])
+
+                existente["hasta"] = max(existente["hasta"], z["hasta"])
+
+                existente["score"] = max(existente["score"], z["score"])
+
+                existente["motivo"] += f" + {z['zona']}"
+
+                solapada = True
+
+                break
+
+        if not solapada:
+
+            zonas_finales.append(z)
+
+    zonas_finales = sorted(zonas_finales, key=lambda x: x["score"], reverse=True)
+
+    return zonas_finales[:max_zonas]
+
 # =========================
 # BACKTEST / ESTADISTICAS / MONTE CARLO
 # =========================
@@ -1694,7 +1930,39 @@ try:
         ok, resp = send_alert_once(valid_key, "señal_valida", valid_msg, telegram_enabled, discord_enabled, discord_webhook_url, telegram_bot_token, telegram_chat_id)
         if ok:
             alert_events.append("🚨 Señal válida enviada por alerta.")
+zonas_daytrade = detectar_zonas_daytrade(
 
+    df_15m=df_15m,
+
+    asia_high=asia_high,
+
+    london_high=london_high,
+
+    max_zonas=5
+
+)
+
+st.subheader("🎯 Zonas profesionales Daytrade")
+
+if zonas_daytrade:
+
+    for i, z in enumerate(zonas_daytrade, start=1):
+
+        estrellas = "⭐" * min(5, int(round(z["score"] / 2)))
+
+        st.write(
+
+            f"**Zona {i} {estrellas}**  \n"
+
+            f"{z['desde']:.2f} - {z['hasta']:.2f}  \n"
+
+            f"Motivo: {z['motivo']}"
+
+        )
+
+else:
+
+    st.info("No hay zonas relevantes cercanas ahora.")
     almost_condition = (
         alert_almost_setups and not trade_valid and candidate_direction in ["LONG", "SHORT"]
         and raw_direction_score >= max(1, min_score - almost_score_gap)
