@@ -1930,39 +1930,7 @@ try:
         ok, resp = send_alert_once(valid_key, "señal_valida", valid_msg, telegram_enabled, discord_enabled, discord_webhook_url, telegram_bot_token, telegram_chat_id)
         if ok:
             alert_events.append("🚨 Señal válida enviada por alerta.")
-zonas_daytrade = detectar_zonas_daytrade(
 
-    df_15m=df_15m,
-
-    asia_high=asia_high,
-
-    london_high=london_high,
-
-    max_zonas=5
-
-)
-
-st.subheader("🎯 Zonas profesionales Daytrade")
-
-if zonas_daytrade:
-
-    for i, z in enumerate(zonas_daytrade, start=1):
-
-        estrellas = "⭐" * min(5, int(round(z["score"] / 2)))
-
-        st.write(
-
-            f"**Zona {i} {estrellas}**  \n"
-
-            f"{z['desde']:.2f} - {z['hasta']:.2f}  \n"
-
-            f"Motivo: {z['motivo']}"
-
-        )
-
-else:
-
-    st.info("No hay zonas relevantes cercanas ahora.")
     almost_condition = (
         alert_almost_setups and not trade_valid and candidate_direction in ["LONG", "SHORT"]
         and raw_direction_score >= max(1, min_score - almost_score_gap)
@@ -2024,7 +1992,39 @@ else:
 
     st.markdown(f"## Calidad del setup: {quality_label} · {quality_score}/10")
     st.divider()
-       
+  zonas_daytrade = detectar_zonas_daytrade(
+
+    df_15m=df_15m,
+
+    asia_high=asia_high,
+
+    london_high=london_high,
+
+    max_zonas=5
+
+)
+
+st.subheader("🎯 Zonas profesionales Daytrade")
+
+if zonas_daytrade:
+
+    for i, z in enumerate(zonas_daytrade, start=1):
+
+        estrellas = "⭐" * min(5, int(round(z["score"] / 2)))
+
+        st.write(
+
+            f"**Zona {i} {estrellas}**  \n"
+
+            f"{z['desde']:.2f} - {z['hasta']:.2f}  \n"
+
+            f"Motivo: {z['motivo']}"
+
+        )
+
+else:
+
+    st.info("No hay zonas relevantes cercanas ahora.")     
     q1, q2, q3, q4, q5 = st.columns(5)
     q1.metric("Calidad", quality_label, f"{quality_score}/10")
     q2.metric("Distancia SL", f"{risk_points_calc:,.0f} pts" if not pd.isna(risk_points_calc) else "—", f"ATR 15M: {atr_15m:,.0f} pts" if not pd.isna(atr_15m) else "—")
