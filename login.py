@@ -44,3 +44,38 @@ def check_login(usuario, password):
         if len(ok) > 0:
             return True
     return False
+def check_access():
+
+    st.sidebar.subheader("🔐 Acceso")
+
+    if "auth" not in st.session_state:
+
+        st.session_state.auth = False
+
+    if st.session_state.auth:
+
+        st.sidebar.success("Acceso habilitado")
+
+        if st.sidebar.button("Cerrar acceso"):
+
+            st.session_state.auth = False
+
+            st.rerun()
+
+        return True
+
+    clave = st.sidebar.text_input("Clave de acceso", type="password")
+
+    if clave:
+
+        if check_login("demo", clave):
+
+            st.session_state.auth = True
+
+            st.rerun()
+
+        else:
+
+            st.sidebar.error("Clave incorrecta")
+
+    return False
