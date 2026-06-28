@@ -20,6 +20,17 @@ except Exception:
     requests = None
 
 from config import *
+from login import check_access
+
+from ui import render_dashboard
+
+if check_access():
+
+    render_dashboard()
+
+else:
+
+    st.info("Ingrese la clave de acceso para abrir el dashboard.")
 from helpers import *
 from exchange import *
 from analysis import *
