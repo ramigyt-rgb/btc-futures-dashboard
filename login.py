@@ -2,15 +2,6 @@
 # LOGIN SIMPLE
 # =========================
 from config import *
-from helpers import *
-from exchange import *
-from analysis import *
-from backtest import *
-from ui import *
-from sidebar import *
-
-from telegram import *
-from alertas import *
 import os
 import hashlib
 from datetime import datetime
