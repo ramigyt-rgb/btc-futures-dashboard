@@ -21,8 +21,11 @@ except Exception:
 
 from config import *
 from login import check_access
-
-from ui import render_dashboard
+import streamlit as st
+if check_access():
+    from ui import render_dashboard 
+    render_dashboard
+else:st.info("Ingrese la clave de acceso para abrir el dashboard.")
 
 if check_access():
 
