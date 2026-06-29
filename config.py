@@ -17,20 +17,7 @@ except Exception:
     
 
 
-st.markdown("""
-<style>
-div[data-testid="stMetricValue"] {font-size: 1.0rem !important; font-weight: 600 !important;}
-div[data-testid="stMetricLabel"] {font-size: 0.75rem !important;}
-div[data-testid="stMetricDelta"] {font-size: 0.70rem !important;}
-.block-container {padding-top: 2rem;}
-@media (max-width: 768px) {
-    div[data-testid="stMetricValue"] {font-size: 0.95rem !important;}
-    div[data-testid="stMetricLabel"] {font-size: 0.70rem !important;}
-    h1 {font-size: 1.55rem !important;}
-    h2 {font-size: 1.20rem !important;}
-}
-</style>
-""", unsafe_allow_html=True)
+
 
 OPEN_TRADE_FILE = "open_trade.csv"
 CLOSED_TRADES_FILE ="closed_trades.csv"
