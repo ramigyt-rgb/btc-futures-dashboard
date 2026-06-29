@@ -1092,8 +1092,6 @@ def render_dashboard():
                 st.write(f"**Distancia SL:** {format_number(risk_points_calc, 2)} puntos")
                 st.write(f"**Score PRO:** {quality_detail['score_100']}/100")
                 st.write(f"**Distancia TP:** {format_number(tp_distance_calc, 2)} puntos")
-                if trade_valid:
-                    st.success(f"Setup válido para estrategia: {estrategia}.")
                 
                 st.write("**Factores positivos:**")
                 for p in quality_detail["positivos"]:
