@@ -936,7 +936,7 @@ def render_dashboard():
             "distancia_tp_pts": tp_distance_calc,
             "tp_atr_multiple": tp_atr_multiple,
             "cuenta_usdt": account_usd,
-            "riesgo_pct": risk_pct_input,
+            "risk_pct": risk_pct,
             "riesgo_usdt_objetivo": risk_usd_target,
             "riesgo_usdt_real": risk_usd,
             "notional_max": max_notional,
