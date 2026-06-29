@@ -1391,7 +1391,7 @@ def render_dashboard():
                         "escenarios": mc["paths"],
                         "trades_horizonte": mc["horizon"],
                         "capital_inicial": mc["start_capital"],
-                        "riesgo_por_trade_%": risk_pct,
+                        "riesgo_por_trade_%": config.get("risk_pct", 0.01),
                         "DD_mediana_%": round(mc["dd_median"], 2),
                         "DD_P95_%": round(mc["dd_p95"], 2),
                         "DD_P99_%": round(mc["dd_p99"], 2),
