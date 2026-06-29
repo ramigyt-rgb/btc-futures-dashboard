@@ -52,7 +52,7 @@ def check_access():
         return True
     clave = st.sidebar.text_input("Clave de acceso", type="password")
     if clave:
-        if check_login("demo", clave):
+        if clave == ACCESS_KEY
             st.session_state.auth = True
             st.rerun()
         else:
