@@ -115,4 +115,26 @@ def render_sidebar():
             setTimeout(function() {{window.parent.location.reload();}}, {int(auto_refresh_seconds) * 1000});
             </script>
             """, height=0)
-    return locals()
+    return {
+
+        "estrategia": estrategia,
+    
+        "account_usd": account_usd,
+    
+        "risk_pct": risk_pct_input,
+    
+        "leverage": leverage,
+    
+        "min_score": min_score,
+    
+        "rr_target": rr_target,
+    
+        "min_rr": min_rr,
+    
+        "max_atr_multiplier": max_atr_multiplier,
+    
+        "show_levels_when_no_trade": show_levels_when_no_trade,
+    
+        "modo_operativo": modo_operativo,
+    
+    }
