@@ -84,8 +84,27 @@ def render_sidebar():
     with st.sidebar.expander("🔔 Alertas estratégicas", expanded=False):
         st.caption("Usa Secrets de Streamlit. Opcionalmente podés sobrescribir token/chat_id acá.")
         telegram_enabled = st.checkbox("Activar Telegram", value=True, key="telegram_enabled_chk")
-        telegram_bot_token = st.text_input("Telegram bot token opcional", value="", type="password", key="telegram_token_input")
-        telegram_chat_id = st.text_input("Telegram chat ID opcional", value="", key="telegram_chat_id_input")
+        telegram_bot_token = st.text_input(
+
+            "Telegram bot token opcional",
+        
+            value=st.secrets.get("TELEGRAM_BOT_TOKEN", ""),
+        
+            type="password",
+        
+            key="telegram_token_input"
+        
+        )
+        
+        telegram_chat_id = st.text_input(
+        
+            "Telegram chat ID opcional",
+        
+            value=st.secrets.get("TELEGRAM_CHAT_ID", ""),
+        
+            key="telegram_chat_id_input"
+        
+        )
         discord_enabled = st.checkbox("Activar Discord", value=False, key="discord_enabled_chk")
         discord_webhook_url = st.text_input("Discord webhook URL", value="", type="password", key="discord_webhook_input")
         alert_valid_signals = st.checkbox("Avisar señales válidas", value=True, key="alert_valid_chk")
