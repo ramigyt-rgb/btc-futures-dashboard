@@ -1,62 +1,203 @@
 # =========================
-# LOGIN SIMPLE
+
+# LOGIN PRO
+
 # =========================
-from config import *
-import os
-import hashlib
-from datetime import datetime
-import ccxt
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
+
 import streamlit as st
-import streamlit.components.v1 as components
-try:
-    import requests
-except Exception:
-    requests = None
 
-def hash_password(password: str) -> str:
-    return hashlib.sha256(str(password).encode("utf-8")).hexdigest()
-def init_users_file():
-    if not os.path.exists(USERS_FILE):
-        pd.DataFrame([
-            {"usuario": "demo", "password_hash": hash_password("demo"), "rol": "cliente"}
-        ]).to_csv(USERS_FILE, index=False)
+from config import ACCESS_KEY
 
-def check_login(usuario, password):
-    init_users_file()
-    users = pd.read_csv(USERS_FILE)
-    if users.empty:
-        return False
-    usuario = str(usuario)
-    password_hash = hash_password(password)
-    if "password_hash" in users.columns:
-        ok = users[(users["usuario"].astype(str) == usuario) & (users["password_hash"].astype(str) == password_hash)]
-        if len(ok) > 0:
-            return True
-    if "password" in users.columns:
-        ok = users[(users["usuario"].astype(str) == usuario) & (users["password"].astype(str) == str(password))]
-        if len(ok) > 0:
-            return True
-    return False
 def check_access():
-    st.sidebar.subheader("🔐 Acceso")
-    if "auth" not in st.session_state:
-        st.session_state.auth = False
-    if st.session_state.auth:
-        st.sidebar.success("Acceso habilitado")
-        if st.sidebar.button("Cerrar acceso"):
-            st.session_state.auth = False
-            st.rerun()
-        return True
-    clave = st.sidebar.text_input("Clave de acceso", type="password")
-    if clave:
-        if clave == ACCESS_KEY:
-            st.session_state.auth = True
-            st.rerun()
-        else:
-            st.sidebar.error("Clave incorrecta")
-    return False
 
-        
+    if "auth" not in st.session_state:
+
+        st.session_state.auth = False
+
+    if st.session_state.auth:
+
+        return True
+
+    st.markdown("""
+
+    <style>
+
+    [data-testid="stSidebar"] {
+
+        display: none;
+
+    }
+
+    .stApp {
+
+        background: radial-gradient(circle at top, #1f2937 0%, #05070d 55%, #020308 100%);
+
+    }
+
+    .login-card {
+
+        max-width: 430px;
+
+        margin: 12vh auto 0 auto;
+
+        padding: 38px 34px;
+
+        border-radius: 24px;
+
+        background: rgba(15, 23, 42, 0.92);
+
+        border: 1px solid rgba(255, 255, 255, 0.10);
+
+        box-shadow: 0 28px 80px rgba(0,0,0,0.45);
+
+        text-align: center;
+
+    }
+
+    .login-logo {
+
+        font-size: 46px;
+
+        margin-bottom: 10px;
+
+    }
+
+    .login-title {
+
+        font-size: 30px;
+
+        font-weight: 800;
+
+        color: #ffffff;
+
+        margin-bottom: 6px;
+
+    }
+
+    .login-subtitle {
+
+        color: #94a3b8;
+
+        font-size: 15px;
+
+        margin-bottom: 24px;
+
+    }
+
+    .login-footer {
+
+        margin-top: 24px;
+
+        color: #64748b;
+
+        font-size: 13px;
+
+    }
+
+    .login-version {
+
+        margin-top: 8px;
+
+        color: #94a3b8;
+
+        font-size: 12px;
+
+    }
+
+    div[data-testid="stTextInput"] label {
+
+        color: #cbd5e1 !important;
+
+        font-weight: 600 !important;
+
+    }
+
+    div[data-testid="stTextInput"] input {
+
+        background-color: #0f172a !important;
+
+        color: white !important;
+
+        border-radius: 12px !important;
+
+        border: 1px solid #334155 !important;
+
+    }
+
+    div.stButton > button {
+
+        width: 100%;
+
+        height: 48px;
+
+        border-radius: 14px;
+
+        font-weight: 800;
+
+        background: linear-gradient(90deg, #ef4444, #f97316);
+
+        color: white;
+
+        border: none;
+
+        margin-top: 10px;
+
+    }
+
+    </style>
+
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+
+    <div class="login-card">
+
+        <div class="login-logo">₿</div>
+
+        <div class="login-title">BTC Dashboard Pro</div>
+
+        <div class="login-subtitle">Acceso exclusivo al panel operativo</div>
+
+    </div>
+
+    """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns([1, 1.15, 1])
+
+    with col2:
+
+        clave = st.text_input(
+
+            "Clave de acceso",
+
+            type="password",
+
+            key="access_key_input"
+
+        )
+
+        if st.button("🚀 Ingresar", key="login_btn"):
+
+            if clave == ACCESS_KEY:
+
+                st.session_state.auth = True
+
+                st.rerun()
+
+            else:
+
+                st.error("Clave incorrecta.")
+
+        st.markdown("""
+
+        <div class="login-footer" style="text-align:center;">
+
+            Powered by Ramigyt
+
+            <div class="login-version">v2.0 Pro</div>
+
+        </div>
+
+        """, unsafe_allow_html=True)
+
+    return False
