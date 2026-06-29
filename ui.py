@@ -272,6 +272,7 @@ def render_dashboard():
     account_usd = config.get("account_usd", 500.0)
 
     risk_pct = config.get("risk_pct", 0.01)
+    risk_pct_input = risk_pct
 
     leverage = config.get("leverage", 5)
 
