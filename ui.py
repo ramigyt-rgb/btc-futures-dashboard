@@ -1094,9 +1094,7 @@ def render_dashboard():
                 st.write(f"**Distancia TP:** {format_number(tp_distance_calc, 2)} puntos")
                 if trade_valid:
                     st.success(f"Setup válido para estrategia: {estrategia}.")
-                else:
-                    for motivo in motivos_bloqueo:
-                        st.warning(motivo)
+                
                 st.write("**Factores positivos:**")
                 for p in quality_detail["positivos"]:
                     st.success(p)
