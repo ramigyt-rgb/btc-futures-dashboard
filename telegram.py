@@ -6,10 +6,7 @@ from helpers import *
 from exchange import *
 from analysis import *
 from backtest import *
-from ui import *
-from sidebar import *
-from login import *
-from alertas import *
+
 import os
 import hashlib
 from datetime import datetime
@@ -150,3 +147,52 @@ Bloqueos / detalles:
 
 Vela 5M: {current_candle_time}
 """
+def send_telegram_message(token, chat_id, text):
+
+    if requests is None:
+
+        return False, "La librería requests no está instalada."
+
+    token = str(token).strip()
+
+    chat_id = str(chat_id).strip()
+
+    if not token:
+
+        return False, "Token vacío."
+
+    if not chat_id:
+
+        return False, "Chat ID vacío."
+
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+
+    payload = {
+
+        "chat_id": chat_id,
+
+        "text": text,
+
+        "parse_mode": "HTML"
+
+    }
+
+    try:
+
+        r = requests.post(url, json=payload, timeout=10)
+
+        if r.status_code != 200:
+
+            return False, r.text
+
+        data = r.json()
+
+        if not data.get("ok"):
+
+            return False, data
+
+        return True, "Mensaje enviado correctamente."
+
+    except Exception as e:
+
+        return False, str(e)
