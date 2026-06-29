@@ -108,21 +108,19 @@ div.stButton > button {
 
 """, unsafe_allow_html=True)
 
-    st.markdown(
+    st.markdown("""
 
-        "<div style='text-align:center; padding:35px;'>"
-    
-        "<div style='font-size:52px; color:#f97316; font-weight:900;'>₿</div>"
-    
-        "<div style='font-size:30px; color:white; font-weight:900;'>BTC Dashboard Pro</div>"
-    
-        "<div style='font-size:15px; color:#94a3b8; margin-top:8px;'>Acceso exclusivo al panel operativo</div>"
-    
-        "</div>",
-    
-        unsafe_allow_html=True
-    
-    )
+<div class="login-box">
+
+    <div class="login-logo">₿</div>
+
+    <div class="login-title">BTC Dashboard Pro</div>
+
+    <div class="login-subtitle">Acceso exclusivo al panel operativo</div>
+
+</div>
+
+""", unsafe_allow_html=True)
 
     c1, c2, c3 = st.columns([1, 1.2, 1])
 
@@ -142,18 +140,16 @@ div.stButton > button {
 
                 st.error("Clave incorrecta.")
 
+        st.markdown("""
 
+<div class="footer-login">
 
-st.markdown(
+    Powered by Ramigyt<br>
 
-    "<div style='text-align:center; color:#94a3b8; font-size:13px; margin-top:25px;'>"
+    v2.0 Pro
 
-    "Powered by Ramigyt<br>v2.0 Pro"
+</div>
 
-    "</div>",
-
-    unsafe_allow_html=True
-
-)
+""", unsafe_allow_html=True)
 
     return False
