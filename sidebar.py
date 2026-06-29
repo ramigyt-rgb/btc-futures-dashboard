@@ -2,6 +2,8 @@
 # SIDEBAR / ACCESO
 # =========================
 from config import *
+from analysis import *
+from telegram import send_telegram_message
 import os
 import hashlib
 from datetime import datetime
