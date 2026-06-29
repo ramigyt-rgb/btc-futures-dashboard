@@ -147,23 +147,23 @@ Bloqueos / detalles:
 
 Vela 5M: {current_candle_time}
 """
-def send_telegram_message(token, chat_id, text):
+def send_telegram_message(text, token="", chat_id=""):
 
     if requests is None:
 
-        return False, "La librería requests no está instalada."
+        return False, "requests no está instalado."
 
-    token = str(token).strip()
+    token = str(token or "").strip()
 
-    chat_id = str(chat_id).strip()
+    chat_id = str(chat_id or "").strip()
 
     if not token:
 
-        return False, "Token vacío."
+        return False, "Falta Telegram bot token."
 
     if not chat_id:
 
-        return False, "Chat ID vacío."
+        return False, "Falta Telegram chat ID."
 
     url = f"https://api.telegram.org/bot{token}/sendMessage"
 
@@ -173,7 +173,9 @@ def send_telegram_message(token, chat_id, text):
 
         "text": text,
 
-        "parse_mode": "HTML"
+        "parse_mode": "HTML",
+
+        "disable_web_page_preview": True
 
     }
 
@@ -181,13 +183,9 @@ def send_telegram_message(token, chat_id, text):
 
         r = requests.post(url, json=payload, timeout=10)
 
-        if r.status_code != 200:
-
-            return False, r.text
-
         data = r.json()
 
-        if not data.get("ok"):
+        if r.status_code != 200 or not data.get("ok"):
 
             return False, data
 
